@@ -1,0 +1,128 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ChecklistController.cs" />
+    <Compile Remove="Domain\ContatoSite.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Notas\notepad.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Report\RelatorioClienteEcomerce.rdlc" />
+    <None Remove="Report\RelatorioEmpresasParceiras.rdlc" />
+    <None Remove="Report\RelatorioFornecedorEcomerce.rdlc" />
+    <None Remove="Report\RelatorioMecanico.rdlc" />
+    <None Remove="Report\RelatorioPedidoEcomerce.rdlc" />
+    <None Remove="Report\RelatorioProdutoEcomerce.rdlc" />
+    <None Remove="Report\RelatorioServicoEcomerce.rdlc" />
+    <None Remove="Report\RelatorioTodosProdutosEcomerce.rdlc" />
+    <None Remove="Report\RelatorioVendedorEcomerce.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Report\RelatorioConciliacaoVenda.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioMecanico.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioEmpresasParceiras.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioTodosProdutosEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioServicoEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioProdutoEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioVendedorEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioFornecedorEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioClienteEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RelatorioPedidoEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper.Rainbow" Version="2.0.78" />
+    <PackageReference Include="EFCore.BulkExtensions" Version="7.1.7" />
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="EPPlus.Core.Extensions" Version="2.4.0" />
+    <PackageReference Include="EPPlus.Interfaces" Version="6.1.1" />
+    <PackageReference Include="Hangfire" Version="1.7.34" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.34" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.34" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.jwtBearer" Version="5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+    <PackageReference Include="MySql.Data" Version="8.0.32" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="OFXSharp" Version="1.0.4002" />
+    <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.17" />
+    <PackageReference Include="RestSharp" Version="106.15.0" />
+    <PackageReference Include="SDK-CloudDfe" Version="1.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+    <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
+    <PackageReference Include="WhatsappBusiness.CloudApi" Version="1.0.68" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Report\dsdados.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>dsdados.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Report\dsdados.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsdados.Designer.cs</LastGenOutput>
+    </None>
+     <None Update="Report\RelatorioClienteEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Report\RelatorioPedidoEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Report\RelatorioVendedorEcomerce.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Domain\ViewModel\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="Notas\notepad.json" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+</Project>
