@@ -16,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Hangfire;
 using Hangfire.SqlServer;
-using ERP.Controllers;
 using ERP_API.Service.Parceiros.Interface;
 using ERP_API.Controllers;
 using ERP_API.Service.Parceiros;
@@ -26,7 +25,6 @@ using ERP_API.Service;
 using System.Net.Http;
 using System.Net.Http.Json;
 using ERP_API.Service.BI2Service;
-using ERP_API.Service.Pluggy.Interface;
 
 namespace WebApplication1
 {
@@ -74,20 +72,12 @@ namespace WebApplication1
             // services.AddHangfireServer();
             services.AddHttpClient();
             services.AddScoped<IRedeService, RedeService>();
-            services.AddScoped<ITecnospeedService, TecnospeeedService>();
-            //services.Configure<UniquePayOptions>(Configuration["UniquePay"]);
             services.AddHttpClient<IUniqueService, UniqueService>();
-            services.AddHttpClient<IWhatsAppBusinessService, WhatsAppBusinessService>();
-            services.AddScoped<IWhatsAppBusinessService, WhatsAppBusinessService>();
             services.AddSingleton(x => new BlobServiceClient(Configuration["ConnectionStrings:StorageAccount"]));
             services.AddScoped<ERP_API.Service.IBlobStorageService, ERP_API.Service.BlobStorageService>();
             services.AddScoped<IConciliadoraService, ConciliadoraService>();
             services.AddScoped<IConciliadoraDashBoardService, ConciliadoraDashBoardService>();
-            services.AddScoped<IWebhookPluggyService, WebhookPluggyService>();
-
             services.AddScoped<IRelatorioBIService, RelatorioBIService>();
-
-            services.AddScoped<IPluggyService, PluggyService>();
 
 
             services.AddControllers();
@@ -189,14 +179,6 @@ namespace WebApplication1
             app.UseSwaggerUI();
 
             app.UseHangfireDashboard("/hangfire");
-
-            // JOB: Atualizar extratos de contas bancárias via Open Finance
-            RecurringJob.AddOrUpdate(
-                "atualizar-extratos-contas-bancarias",
-                () => ChamarEndpoint("/api/Extrato/atualizar-extratos-contas-bancarias"),
-                Cron.Daily(3), // Todo dia às 3h da manhã
-                TimeZoneInfo.Local
-            );
 
             //// JOB 1: Enviar extratos mensais para clientes ativos
             //RecurringJob.AddOrUpdate(

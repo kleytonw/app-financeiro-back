@@ -5,30 +5,33 @@ namespace ERP_API.Domain.Entidades
 {
     public class Categoria : BaseModel
     {
-        public int IdCategoria { get; set; }
-        public string Nome { get; set; }
-        protected Categoria() { }
-        public Categoria(string nome, string usuarioInclusao)
+        public int IdCategoria { get; private set; }
+        public string Nome { get; private set; }
+        public string Cor { get; private set; }
+        public Categoria() { }
+        public Categoria(string nome, string cor, string usuarioInclusao)
         {
-            this.Nome = nome;
+            Nome = nome;
+            Cor = cor;
             SetUsuarioInclusao(usuarioInclusao);
+            Valida();
         }
-
-        public void Alterar(string nome, string usuarioAlteracao)
+        public void Alterar(string nome, string cor, string usuarioAlteracao)
         {
-            this.Nome = nome;
+            Nome = nome;
+            Cor = cor;
             SetUsuarioAlteracao(usuarioAlteracao);
+            Valida();
         }
-
         public void Excluir(string usuarioExclusao)
         {
             SetUsuarioExclusao(usuarioExclusao);
+            Valida();
         }
-
         public void Valida()
         {
             if (string.IsNullOrEmpty(Nome))
-                throw new Exception("O nome é obrigatório");
+                throw new Exception("Nome é obrigatório");
         }
     }
 }

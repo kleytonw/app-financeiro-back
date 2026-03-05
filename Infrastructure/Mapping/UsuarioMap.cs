@@ -1,52 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+using ERP.Infrastructure.Mapping;
+using ERP_API.Domain.Entidades;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ERP.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ERP.Infrastructure.Mapping
+namespace ERP_API.Infrastructure.Mapping
 {
-    public class UsuarioMap : IEntityTypeConfiguration<Usuario>
+    public class UsuarioMap : BaseModelMap<Usuario>
     {
-        public void Configure(EntityTypeBuilder<Usuario> builder)
+        public override void Configure(EntityTypeBuilder<Usuario> builder)
         {
             builder.HasKey(c => c.IdUsuario);
-            builder.HasOne(c => c.Cliente)
-               .WithMany()
-               .HasForeignKey(c => c.IdPessoa);
-            builder.HasOne(x => x.Consultor)
-               .WithMany()
-               .HasForeignKey(x => x.IdPessoa);
-            builder.HasOne(x => x.Afiliado)
-               .WithMany()
-               .HasForeignKey(x => x.IdPessoa);
+            builder.Property(c => c.Nome).HasMaxLength(200);
+            builder.Property(c => c.Email).HasMaxLength(200);
+            builder.Property(c => c.Senha).HasMaxLength(500);
+            builder.Property(c => c.Telefone).HasMaxLength(20);
+            builder.Property(c => c.Foto).HasMaxLength(500);
+            builder.Property(c => c.GoogleId).HasMaxLength(200);
+            builder.Property(c => c.EmailConfirmado);
 
-            builder.HasOne(x => x.Pessoa)
-               .WithMany()
-               .HasForeignKey(x => x.IdPessoa);
+            builder.HasIndex(c => c.Email).IsUnique();
+            builder.HasIndex(c => c.GoogleId);
 
-            builder.Property(c => c.Nome);
-            builder.Property(c => c.Login);
-            builder.Property(c => c.Senha);
-            builder.Property(c => c.Email);
-
-            builder.Property(c => c.PrimeiroAcesso);
-
-
-            builder.HasOne(x => x.ERP)
-               .WithMany()
-               .HasForeignKey(x => x.IdERPs);
-
-
-            builder.Property(c => c.UsuarioInclusao);
-            builder.Property(c => c.DataInclusao);
-            builder.Property(c => c.UsuarioAlteracao);
-            builder.Property(c => c.DataAlteracao);
-            builder.Property(c => c.UsuarioExclusao);
-            builder.Property(c => c.DataExclusao);
-            builder.Property(c => c.Situacao);
+            base.Configure(builder);
         }
     }
 }

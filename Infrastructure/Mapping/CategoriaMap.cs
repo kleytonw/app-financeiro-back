@@ -1,7 +1,7 @@
 ﻿using ERP.Infrastructure.Mapping;
-using ERP.Models;
 using ERP_API.Domain.Entidades;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace ERP_API.Infrastructure.Mapping
 {
     public class CategoriaMap : BaseModelMap<Categoria>
@@ -10,7 +10,7 @@ namespace ERP_API.Infrastructure.Mapping
         {
             builder.HasKey(c => c.IdCategoria);
             builder.Property(c => c.Nome);
-            builder.Property(c => c.Situacao);
+            builder.Property(c => c.Cor);
             base.Configure(builder);
         }
     }
