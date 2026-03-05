@@ -5,26 +5,26 @@
     "version": "v1"
   },
   "paths": {
-    "/api/app/login": {
+    "/api/Usuario/cadastrar": {
       "post": {
         "tags": [
-          "App"
+          "Usuario"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginAppModel"
+                "$ref": "#/components/schemas/UsuarioRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginAppModel"
+                "$ref": "#/components/schemas/UsuarioRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginAppModel"
+                "$ref": "#/components/schemas/UsuarioRequest"
               }
             }
           }
@@ -36,36 +36,72 @@
         }
       }
     },
-    "/api/app/produtos": {
+    "/api/Usuario/login": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioLoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioLoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Usuario/google": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Usuario/listar": {
       "get": {
         "tags": [
-          "App"
-        ],
-        "parameters": [
-          {
-            "name": "idCliente",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "top",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+          "Usuario"
         ],
         "responses": {
           "200": {
@@ -74,444 +110,10 @@
         }
       }
     },
-    "/api/app/meios-captura": {
+    "/api/Usuario/obter": {
       "get": {
         "tags": [
-          "App"
-        ],
-        "parameters": [
-          {
-            "name": "idCliente",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "top",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/adquirentes": {
-      "get": {
-        "tags": [
-          "App"
-        ],
-        "parameters": [
-          {
-            "name": "idCliente",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "top",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/modalidades": {
-      "get": {
-        "tags": [
-          "App"
-        ],
-        "parameters": [
-          {
-            "name": "idCliente",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "top",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/envio-vendas-cartao-credito": {
-      "post": {
-        "tags": [
-          "App"
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "idCliente": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "senha": {
-                    "type": "string"
-                  },
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              },
-              "encoding": {
-                "idCliente": {
-                  "style": "form"
-                },
-                "senha": {
-                  "style": "form"
-                },
-                "file": {
-                  "style": "form"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/envio-vendas-cartao-credito-json": {
-      "post": {
-        "tags": [
-          "App"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VendasConciliadasRequestModelJson"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VendasConciliadasRequestModelJson"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/VendasConciliadasRequestModelJson"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/listar-arquivos-enviados-erp": {
-      "post": {
-        "tags": [
-          "App"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FiltroArquivosEnviadosModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FiltroArquivosEnviadosModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FiltroArquivosEnviadosModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/listar-clientes": {
-      "get": {
-        "tags": [
-          "App"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/app/envio-movimentacao-diaria": {
-      "post": {
-        "tags": [
-          "App"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoDiariaRequestModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoDiariaRequestModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoDiariaRequestModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/listar": {
-      "post": {
-        "tags": [
-          "Extrato"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/listarClienteContaBancaria": {
-      "post": {
-        "tags": [
-          "Extrato"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/salvar": {
-      "post": {
-        "tags": [
-          "Extrato"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtratoRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/import": {
-      "post": {
-        "tags": [
-          "Extrato"
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "OfxFile": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "IdCliente": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdClienteContaBancaria": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
-                }
-              },
-              "encoding": {
-                "OfxFile": {
-                  "style": "form"
-                },
-                "IdCliente": {
-                  "style": "form"
-                },
-                "IdClienteContaBancaria": {
-                  "style": "form"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/pesquisar": {
-      "post": {
-        "tags": [
-          "Extrato"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/excluir": {
-      "get": {
-        "tags": [
-          "Extrato"
+          "Usuario"
         ],
         "parameters": [
           {
@@ -530,20 +132,10 @@
         }
       }
     },
-    "/api/Extrato/obterContaBancaria": {
+    "/api/Usuario/perfil": {
       "get": {
         "tags": [
-          "Extrato"
-        ],
-        "parameters": [
-          {
-            "name": "idContaBancaria",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+          "Usuario"
         ],
         "responses": {
           "200": {
@@ -552,21 +144,30 @@
         }
       }
     },
-    "/api/Extrato/obterClienteContaBancaria": {
-      "get": {
+    "/api/Usuario/alterar": {
+      "post": {
         "tags": [
-          "Extrato"
+          "Usuario"
         ],
-        "parameters": [
-          {
-            "name": "idClienteContaBancaria",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -574,10 +175,41 @@
         }
       }
     },
-    "/api/Extrato/obter": {
+    "/api/Usuario/alterar-senha": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlterarSenhaRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlterarSenhaRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlterarSenhaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Usuario/excluir": {
       "get": {
         "tags": [
-          "Extrato"
+          "Usuario"
         ],
         "parameters": [
           {
@@ -596,204 +228,27 @@
         }
       }
     },
-    "/api/Extrato/obter-conta-bancaria-open-finance": {
-      "get": {
-        "tags": [
-          "Extrato"
-        ],
-        "parameters": [
-          {
-            "name": "idClienteContaBancaria",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/atualizar-extrato-conta-bancaria": {
+    "/api/Usuario/vincular-google": {
       "post": {
         "tags": [
-          "Extrato"
+          "Usuario"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/PesquisarExtrato"
+                "$ref": "#/components/schemas/UsuarioGoogleRequest"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/atualizar-extratos-contas-bancarias": {
-      "get": {
-        "tags": [
-          "Extrato"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Extrato/atualizar-conta-bancaria-open-finance": {
-      "get": {
-        "tags": [
-          "Extrato"
-        ],
-        "parameters": [
-          {
-            "name": "idClienteContaBancaria",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/criar": {
-      "post": {
-        "tags": [
-          "NotaFiscal"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CriarNotaFiscalRequestModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CriarNotaFiscalRequestModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CriarNotaFiscalRequestModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/cancelar": {
-      "post": {
-        "tags": [
-          "NotaFiscal"
-        ],
-        "parameters": [
-          {
-            "name": "idnotafiscal",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/WebhookPluggy/listar": {
-      "get": {
-        "tags": [
-          "WebhookPluggy"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/WebhookPluggy/pesquisar": {
-      "post": {
-        "tags": [
-          "WebhookPluggy"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogWebhookPluggyPesquisarModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogWebhookPluggyPesquisarModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogWebhookPluggyPesquisarModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/WebhookPluggy/criar-log-webhook-pluggy": {
-      "post": {
-        "tags": [
-          "WebhookPluggy"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { }
-            },
-            "text/json": {
-              "schema": { }
-            },
-            "application/*+json": {
-              "schema": { }
             }
           }
         },
@@ -807,126 +262,34 @@
   },
   "components": {
     "schemas": {
-      "CriarNotaFiscalRequestModel": {
+      "AlterarSenhaRequest": {
         "type": "object",
         "properties": {
-          "idCliente": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nomeCliente": {
+          "senhaAtual": {
             "type": "string",
             "nullable": true
           },
-          "idSacadoUnique": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ExtratoRequest": {
-        "type": "object",
-        "properties": {
-          "idExtrato": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idClienteContaBancaria": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "idCliente": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "descricao": {
-            "type": "string",
-            "nullable": true
-          },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          },
-          "uniqueId": {
-            "type": "string",
-            "nullable": true
-          },
-          "tipo": {
-            "$ref": "#/components/schemas/OFXTransactionType"
-          },
-          "dataLancamento": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "pagador": {
-            "type": "string",
-            "nullable": true
-          },
-          "cpfCnpjPagador": {
-            "type": "string",
-            "nullable": true
-          },
-          "categoria": {
-            "type": "string",
-            "nullable": true
-          },
-          "banco": {
-            "type": "string",
-            "nullable": true
-          },
-          "metodoPagamento": {
-            "type": "string",
-            "nullable": true
-          },
-          "situacao": {
+          "novaSenha": {
             "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "FiltroArquivosEnviadosModel": {
+      "UsuarioGoogleRequest": {
         "type": "object",
         "properties": {
-          "idCliente": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dataInicio": {
+          "googleToken": {
             "type": "string",
-            "format": "date-time"
-          },
-          "dataTermino": {
-            "type": "string",
-            "format": "date-time"
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "LogWebhookPluggyPesquisarModel": {
+      "UsuarioLoginRequest": {
         "type": "object",
         "properties": {
-          "dataInicio": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataFim": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "LoginAppModel": {
-        "type": "object",
-        "properties": {
-          "login": {
+          "email": {
             "type": "string",
             "nullable": true
           },
@@ -937,320 +300,30 @@
         },
         "additionalProperties": false
       },
-      "MovimentacaoDiariaRequestModel": {
-        "required": [
-          "idCliente"
-        ],
+      "UsuarioRequest": {
         "type": "object",
         "properties": {
-          "idCliente": {
+          "idUsuario": {
             "type": "integer",
             "format": "int32"
           },
-          "tipoMovimentacao": {
+          "nome": {
             "type": "string",
             "nullable": true
           },
-          "dataMovimentacao": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "fornecedorCliente": {
+          "email": {
             "type": "string",
             "nullable": true
           },
-          "notaFiscal": {
+          "senha": {
             "type": "string",
             "nullable": true
           },
-          "produto": {
+          "telefone": {
             "type": "string",
             "nullable": true
           },
-          "categoria": {
-            "type": "string",
-            "nullable": true
-          },
-          "sku": {
-            "type": "string",
-            "nullable": true
-          },
-          "ncm": {
-            "type": "string",
-            "nullable": true
-          },
-          "cfop": {
-            "type": "string",
-            "nullable": true
-          },
-          "quantidade": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "precoAquisicao": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unidadeMedida": {
-            "type": "string",
-            "nullable": true
-          },
-          "valorUnitario": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "valorDesconto": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "valorTotal": {
-            "type": "number",
-            "format": "double"
-          },
-          "codigoBarras": {
-            "type": "string",
-            "nullable": true
-          },
-          "cmV_Aquisicao": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "cmV_Contabil": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "cmV_Tributos": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "cmV_Total": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "margem": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "observacao": {
-            "type": "string",
-            "nullable": true
-          },
-          "ean": {
-            "type": "string",
-            "nullable": true
-          },
-          "codigoInterno": {
-            "type": "string",
-            "nullable": true
-          },
-          "custo_Contabil_Atual": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "custo_Aquisicao_Atual": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "custo_Tributos_Atual": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "preco_Venda_Unitario": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "promocao": {
-            "type": "boolean",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "OFXTransactionType": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "PesquisarExtrato": {
-        "type": "object",
-        "properties": {
-          "dataInicio": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataTermino": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "idCliente": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idClienteContaBancaria": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "openFinance": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "VendasConciliadasRequestModelJson": {
-        "type": "object",
-        "properties": {
-          "idCliente": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "identificadorConciliadora": {
-            "type": "string",
-            "nullable": true
-          },
-          "dataInicial": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataFinal": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "versao": {
-            "type": "string",
-            "nullable": true
-          },
-          "lote": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "nomeSistema": {
-            "type": "string",
-            "nullable": true
-          },
-          "produto": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "descricaoTipoProduto": {
-            "type": "string",
-            "nullable": true
-          },
-          "codigoAutorizacao": {
-            "type": "string",
-            "nullable": true
-          },
-          "identificadorPagamento": {
-            "type": "string",
-            "nullable": true
-          },
-          "dataVenda": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataVencimento": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "valorVendaParcela": {
-            "type": "number",
-            "format": "double"
-          },
-          "valorLiquidoParcela": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalVenda": {
-            "type": "number",
-            "format": "double"
-          },
-          "taxa": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "parcela": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalParcelas": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valorBrutoMoeda": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "valorLiquidoMoeda": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "cotacaoMoeda": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "moeda": {
-            "type": "string",
-            "nullable": true
-          },
-          "nsu": {
-            "type": "string",
-            "nullable": true
-          },
-          "tid": {
-            "type": "string",
-            "nullable": true
-          },
-          "terminal": {
-            "type": "string",
-            "nullable": true
-          },
-          "meioCaptura": {
-            "type": "string",
-            "nullable": true
-          },
-          "operadora": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "modalidade": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
+          "foto": {
             "type": "string",
             "nullable": true
           }

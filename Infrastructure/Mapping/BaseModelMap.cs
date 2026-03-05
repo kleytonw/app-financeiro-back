@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ERP.Models;
-using ERP.Domain.Entidades;
 
 namespace ERP.Infrastructure.Mapping
 {

@@ -1,569 +1,362 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using ERP.Infra;
+using ERP.Models.SecurityToken;
+using ERP_API.Domain.Entidades;
+using ERP_API.Models;
+using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Dapper;
-using ERP.Models;
-using System.Net.Mail;
-using System.Net.Mime;
+using System.Security.Cryptography;
 using System.Text;
-using ERP.Domain.Entidades;
-using ERP_API.Domain.Entidades;
-using MySqlX.XDevAPI.Common;
+using System.Threading.Tasks;
 
-namespace ERP.Controllers
+namespace ERP_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public class UsuarioController : ControllerBase
+    [Route("api/[controller]")]
+    public class UsuarioController(Context context) : ControllerBase
     {
-
-        System.Net.NetworkCredential credentialsSendGrid = new System.Net.NetworkCredential("apikey", "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");
-        SmtpClient smtpClientSendGrid = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
-
-        private IConfiguration _config;
-        protected Context context;
-
-        public UsuarioController(Context context,
-            IConfiguration config)
+        [HttpPost]
+        [Route("cadastrar")]
+        [AllowAnonymous]
+        public IActionResult Cadastrar([FromBody] UsuarioRequest model)
         {
-            _config = config;
-            this.context = context;
-        }
+            try
+            {
+                if (string.IsNullOrEmpty(model.Email))
+                    return BadRequest("Email é obrigatório");
 
-        [HttpGet]
-        [Route("listarUsuarios")]
-        public IActionResult ListarUsuarios()
-        {
-            var result = context.Usuario
-                  .Select(m => new
-                  {
-                      m.IdUsuario,
-                      m.Nome,
-                      m.Login,
-                      m.TipoUsuario,
-                      m.Situacao
-                  }).ToList();
-            return Ok(result);
+                if (string.IsNullOrEmpty(model.Senha))
+                    return BadRequest("Senha é obrigatória");
+
+                var usuarioExistente = context.Usuario.FirstOrDefault(x => x.Email == model.Email && x.Situacao == "Ativo");
+                if (usuarioExistente != null)
+                    return BadRequest("Email já cadastrado");
+
+                var senhaHash = HashSenha(model.Senha);
+                var usuario = new Usuario(model.Nome, model.Email, senhaHash, model.Telefone, model.Email);
+
+                context.Usuario.Add(usuario);
+                context.SaveChanges();
+
+                var token = GerarToken(usuario);
+
+                return Ok(new LoginResponse
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Token = token
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        [Route("pesquisarUsuario")]
-        public IActionResult PesquisarUsuario([FromBody] PesquisarUsuarioRequest model)
+        [Route("login")]
+        [AllowAnonymous]
+        public IActionResult Login([FromBody] UsuarioLoginRequest model)
         {
-            var usuarioLogado = context.Usuario.FirstOrDefault(x => x.Login == User.Identity.Name);
+            try
+            {
+                if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Senha))
+                    return BadRequest("Email e senha são obrigatórios");
 
-            var query = context.Usuario.AsQueryable();  
+                var senhaHash = HashSenha(model.Senha);
+                var usuario = context.Usuario.FirstOrDefault(x =>
+                    x.Email == model.Email &&
+                    x.Senha == senhaHash &&
+                    x.Situacao == "Ativo");
 
-            if (model.Chave == "Nome")
-            {
-                query = query.Where(x => x.Nome == model.Valor);
-            }
-            else if (model.Chave == "TipoUsuario")
-            {
-                query = query.Where(x => x.TipoUsuario == model.Valor);
-            }
-            else if (model.Chave == "Login")
-            {
-                query = query.Where(x => x.Login ==  model.Valor);
-            }
-            else
-            {
-                return BadRequest("Chave informada incorreta");
-            }
+                if (usuario == null)
+                    return BadRequest("Email ou senha inválidos");
 
-            var result = query.Select(
-                m => new
+                var token = GerarToken(usuario);
+
+                return Ok(new LoginResponse
                 {
-                    m.IdUsuario,
-                    m.Nome,
-                    m.Login,
-                    m.TipoUsuario,
-                    m.Situacao
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Token = token
                 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("google")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginGoogle([FromBody] UsuarioGoogleRequest model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(model.GoogleToken))
+                    return BadRequest("Token do Google é obrigatório");
+
+                var payload = await GoogleJsonWebSignature.ValidateAsync(model.GoogleToken);
+
+                if (payload == null)
+                    return BadRequest("Token do Google inválido");
+
+                var usuario = context.Usuario.FirstOrDefault(x =>
+                    (x.GoogleId == payload.Subject || x.Email == payload.Email) &&
+                    x.Situacao == "Ativo");
+
+                if (usuario == null)
+                {
+                    usuario = Usuario.CriarComGoogle(
+                        payload.Name,
+                        payload.Email,
+                        payload.Subject,
+                        payload.Picture
+                    );
+
+                    context.Usuario.Add(usuario);
+                    context.SaveChanges();
+                }
+                else if (string.IsNullOrEmpty(usuario.GoogleId))
+                {
+                    usuario.VincularGoogle(payload.Subject, payload.Email);
+                    context.Update(usuario);
+                    context.SaveChanges();
+                }
+
+                var token = GerarToken(usuario);
+
+                return Ok(new LoginResponse
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Token = token
+                });
+            }
+            catch (InvalidJwtException)
+            {
+                return BadRequest("Token do Google inválido");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("listar")]
+        [Authorize]
+        public IActionResult Listar()
+        {
+            var result = context.Usuario.Where(x => x.Situacao == "Ativo")
+                .Select(m => new UsuarioResponse
+                {
+                    IdUsuario = m.IdUsuario,
+                    Nome = m.Nome,
+                    Email = m.Email,
+                    Telefone = m.Telefone,
+                    Foto = m.Foto,
+                    EmailConfirmado = m.EmailConfirmado,
+                    PossuiGoogle = !string.IsNullOrEmpty(m.GoogleId),
+                    Situacao = m.Situacao
+                }).Take(500).ToList();
 
             return Ok(result);
         }
 
         [HttpGet]
-        [Route("listarEmpresa")]
-        public IActionResult ListarEmpresa()
+        [Route("obter")]
+        [Authorize]
+        public IActionResult Obter(int id)
         {
-            var result = context.Empresa
-                  .Select(m => new
-                  {
-                      m.IdEmpresa,
-                      m.Nome,
-                     
-                  }).ToList();
-            return Ok(result);
+            var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == id && x.Situacao == "Ativo");
+            if (usuario == null)
+                return BadRequest("Usuário não encontrado");
+
+            return Ok(new UsuarioResponse
+            {
+                IdUsuario = usuario.IdUsuario,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Telefone = usuario.Telefone,
+                Foto = usuario.Foto,
+                EmailConfirmado = usuario.EmailConfirmado,
+                PossuiGoogle = !string.IsNullOrEmpty(usuario.GoogleId),
+                Situacao = usuario.Situacao
+            });
         }
 
         [HttpGet]
-        [Route("listarConsultor")]
-        public IActionResult ListarConsultor()
+        [Route("perfil")]
+        [Authorize]
+        public IActionResult ObterPerfil()
         {
-            var result = context.Consultor.Include(x => x.Pessoa)
-                  .Select(m => new
-                  {
-                      m.IdPessoa,
-                      m.Pessoa.Nome,
+            var email = User.Identity?.Name;
+            var usuario = context.Usuario.FirstOrDefault(x => x.Email == email && x.Situacao == "Ativo");
 
-                  }).ToList();
-            return Ok(result);
+            if (usuario == null)
+                return BadRequest("Usuário não encontrado");
+
+            return Ok(new UsuarioResponse
+            {
+                IdUsuario = usuario.IdUsuario,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Telefone = usuario.Telefone,
+                Foto = usuario.Foto,
+                EmailConfirmado = usuario.EmailConfirmado,
+                PossuiGoogle = !string.IsNullOrEmpty(usuario.GoogleId),
+                Situacao = usuario.Situacao
+            });
         }
 
         [HttpPost]
         [Route("alterar")]
         [Authorize]
-        public IActionResult Alterar([FromBody] UsuarioModel model)
+        public IActionResult Alterar([FromBody] UsuarioRequest model)
         {
-            Consultor consultor;
-            Cliente cliente;
-            Usuario usuario;
-            Afiliado afiliado;
+            try
+            {
+                var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == model.IdUsuario && x.Situacao == "Ativo");
+                if (usuario == null)
+                    return BadRequest("Usuário não encontrado");
 
-                consultor = context.Consultor.FirstOrDefault(e => e.IdPessoa == model.IdConsultor);
-                cliente = context.Cliente.FirstOrDefault(p => p.IdPessoa == model.IdCliente);
-                usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == model.IdUsuario);
-                afiliado = context.Afiliado.FirstOrDefault(a => a.IdPessoa == model.IdAfiliado);
-            usuario.Alterar(
-                    model.Login,
-                    cliente,
-                    consultor,
-                    afiliado,
-                    model.Nome,
-                    model.Email,
-                    model.TipoUsuario,
-                    User.Identity.Name);
+                usuario.Alterar(model.Nome, model.Telefone, model.Foto, User.Identity?.Name);
 
                 context.Update(usuario);
                 context.SaveChanges();
-                return Ok();
 
+                return Ok(new UsuarioResponse
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Telefone = usuario.Telefone,
+                    Foto = usuario.Foto,
+                    EmailConfirmado = usuario.EmailConfirmado,
+                    PossuiGoogle = !string.IsNullOrEmpty(usuario.GoogleId),
+                    Situacao = usuario.Situacao
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
 
         [HttpPost]
-        [Route("salvarUsuario")]
+        [Route("alterar-senha")]
         [Authorize]
-        public IActionResult SalvarUsuario([FromBody] UsuarioModel model)
+        public IActionResult AlterarSenha([FromBody] AlterarSenhaRequest model)
         {
-            var consultor = context.Consultor.FirstOrDefault(x => x.IdPessoa == model.IdConsultor);
-            var usuarioLogado = context.Usuario.FirstOrDefault(x => x.Login == User.Identity.Name);
-            var cliente = context.Cliente.FirstOrDefault(x => x.IdPessoa == model.IdCliente);
-            var afiliado = context.Afiliado.FirstOrDefault(x => x.IdPessoa == model.IdAfiliado);
-            var res = context.Usuario.FirstOrDefault(x => x.Login == model.Login);
+            try
+            {
+                var email = User.Identity?.Name;
+                var usuario = context.Usuario.FirstOrDefault(x => x.Email == email && x.Situacao == "Ativo");
 
-            if (res != null)
-                return BadRequest("Login já cadastrado");
-            if (cliente == null && model.TipoUsuario == "Cliente")
-                return BadRequest("Empresa não encontrada.");
-            if (consultor == null && model.TipoUsuario == "Consultor")
-                return BadRequest("Consultor não encontrada.");
+                if (usuario == null)
+                    return BadRequest("Usuário não encontrado");
 
+                var senhaAtualHash = HashSenha(model.SenhaAtual);
+                if (usuario.Senha != senhaAtualHash)
+                    return BadRequest("Senha atual incorreta");
 
-            var usuario = new Usuario(
-                login: model.Login,
-                cliente : cliente,
-                consultor: consultor,
-                afiliado: afiliado,
-                nome: model.Nome,
-                email: model.Email,
-                tipoUsuario: model.TipoUsuario,
-                senha: model.Senha,
-                usuarioInclusao: "admin");
+                var novaSenhaHash = HashSenha(model.NovaSenha);
+                usuario.AlterarSenha(novaSenhaHash, email);
 
-            context.Usuario.Add(usuario);
-            EnviarEmail(model);
-            context.SaveChanges();
+                context.Update(usuario);
+                context.SaveChanges();
 
-            return Ok();
+                return Ok("Senha alterada com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
-        [Route("obterUsuario")]
+        [Route("excluir")]
         [Authorize]
-        public IActionResult ObterUsuario(int idUsuario)
-        {
-            var usuario = context.Usuario.Include(p => p.Cliente).FirstOrDefault(x => x.IdUsuario == idUsuario);
-            var consultor = context.Usuario.Include(p => p.Pessoa).FirstOrDefault(x => x.IdUsuario == idUsuario);
-
-            if (usuario == null)
-                return BadRequest("Usuário não encontrado ");
-
-            var model = new UsuarioModel();
-            model.TipoUsuario = usuario.TipoUsuario;
-            model.NomeCliente = usuario.Cliente?.Pessoa.Nome; 
-            model.NomeConsultor = consultor.Pessoa?.Nome; 
-            model.IdEmpresa = usuario.IdEmpresa;
-            model.IdUsuario = usuario.IdUsuario;
-            model.Login = usuario.Login;
-            model.Email = usuario.Email;
-            model.Nome = usuario.Nome;
-            model.Situacao = usuario.Situacao;
-
-            return Ok(model);
-        }
-
-
-        [HttpGet]
-        [Route("desativarUsuario")]
-        [Authorize]
-        public IActionResult DesativarUsuario(int idUsuario)
-        {
-            var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == idUsuario);
-            if (usuario == null)
-                return BadRequest("Usuário não encontrado");
-
-            usuario.Inativar(User.Identity.Name);
-
-            context.Usuario.Update(usuario);
-            context.SaveChanges();
-            return Ok();
-        }
-
-        [HttpGet]
-        [Route("ativarUsuario")]
-        [Authorize]
-        public IActionResult AtivarUsuario(int idUsuario)
-        {
-            var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == idUsuario);
-            if (usuario == null)
-                return BadRequest("Usuário não encontrado");
-
-            usuario.Ativar(User.Identity.Name);
-
-            context.Usuario.Update(usuario);
-            context.SaveChanges();
-            return Ok();
-        }
-
-
-        [HttpGet]
-        [Route("resetarSenha")]
-        [AllowAnonymous]
-        public IActionResult ResetarSenha(int id)
+        public IActionResult Excluir(int id)
         {
             var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == id);
-
             if (usuario == null)
                 return BadRequest("Usuário não encontrado");
 
-            #region RandonSenha
-            const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            StringBuilder sb = new StringBuilder();
-            Random rnd = new Random();
-
-            for (int i = 0; i < 6; i++)
-            {
-                int index = rnd.Next(chars.Length);
-                sb.Append(chars[index]);
-            }
-            string novasenha = sb.ToString();
-            #endregion
-
-            usuario.PrimeiroAcesso = "S";
-            usuario.Senha = novasenha;
+            usuario.Excluir(User.Identity?.Name);
 
             context.Update(usuario);
             context.SaveChanges();
 
-            string subject = usuario.Nome + "Senha Resetada";
-            string templateHtml = $"<h2> Resete de Senha </h2> <h3> Prezado úsuario, sua senha provisória para alteração é:</h3><h1>{novasenha}</h1>";
-
-            MailMessage mailMsg = new MailMessage();
-            mailMsg.From = new MailAddress("gerenciar@gerenciarsc.com.br", "Resetar Senha");
-            mailMsg.Subject = subject;
-            mailMsg.To.Add(new MailAddress(usuario.Email, "Senha resetada!"));
-            string html = templateHtml;
-            mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-
-
-            smtpClientSendGrid.Credentials = credentialsSendGrid;
-
-            try
-            {
-                smtpClientSendGrid.Send(mailMsg);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-            }
             return Ok();
         }
-
-        [HttpGet]
-        [Route("recuperarSenha")]
-        [AllowAnonymous]
-        public IActionResult RecuperarSenha(string email)
-        {
-            var usuario = context.Usuario.FirstOrDefault(x => x.Email == email);
-
-            if (usuario == null)
-                return BadRequest("Usuário não encontrado");
-
-            #region RandonSenha
-            const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            StringBuilder sb = new StringBuilder();
-            Random rnd = new Random();
-
-            for (int i = 0; i < 6; i++)
-            {
-                int index = rnd.Next(chars.Length);
-                sb.Append(chars[index]);
-            }
-            string novasenha = sb.ToString();
-            #endregion
-
-            usuario.PrimeiroAcesso = "S";
-            usuario.Senha = novasenha;
-
-            context.Update(usuario);
-            context.SaveChanges();
-
-            string subject = usuario.Nome + "Senha Recuperada";
-            string templateHtml = $"<h2> Recuperação de Senha </h2> <h3> Prezado úsuario, sua senha provisória para alteração é:</h3><h1>{novasenha}</h1>";
-
-            MailMessage mailMsg = new MailMessage();
-            mailMsg.From = new MailAddress("gerenciar@gerenciarsc.com.br", "Recuperar Senha");
-            mailMsg.Subject = subject;
-            mailMsg.To.Add(new MailAddress(usuario.Email, "Senha resetada!"));
-            string html = templateHtml;
-            mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-
-
-            smtpClientSendGrid.Credentials = credentialsSendGrid;
-
-            try
-            {
-                smtpClientSendGrid.Send(mailMsg);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-            }
-            return Ok();
-        }
-
-        [HttpGet]
-        [Route("recuperarSenhaLogin")]
-        [AllowAnonymous]
-        public IActionResult RecuperarSenhaLogin(string login)
-        {
-            var usuario = context.Usuario.FirstOrDefault(x => x.Login == login);
-
-            if (usuario == null)
-                return BadRequest("Usuário não encontrado");
-
-            #region RandonSenha
-            const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            StringBuilder sb = new StringBuilder();
-            Random rnd = new Random();
-
-            for (int i = 0; i < 6; i++)
-            {
-                int index = rnd.Next(chars.Length);
-                sb.Append(chars[index]);
-            }
-            string novasenha = sb.ToString();
-            #endregion
-
-            usuario.PrimeiroAcesso = "S";
-            usuario.Senha = novasenha;
-
-            context.Update(usuario);
-            context.SaveChanges();
-
-            string subject = usuario.Nome + "Senha Recuperada";
-            string templateHtml = $"<h2> Recuperação de Senha </h2> <h3> Prezado úsuario, sua senha provisória para alteração é:</h3><h1>{novasenha}</h1>";
-
-            MailMessage mailMsg = new MailMessage();
-            mailMsg.From = new MailAddress("gerenciar@gerenciarsc.com.br", "Recuperar Senha");
-            mailMsg.Subject = subject;
-            mailMsg.To.Add(new MailAddress(usuario.Email, "Senha resetada!"));
-            string html = templateHtml;
-            mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-
-
-            smtpClientSendGrid.Credentials = credentialsSendGrid;
-
-            try
-            {
-                smtpClientSendGrid.Send(mailMsg);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-            }
-            return Ok();
-        }
-
-        [HttpGet]
-        [Route("enviarEmail")]
-        [AllowAnonymous]
-        public IActionResult EnviarEmail([FromBody] UsuarioModel model)
-        {
-            //var usuario = context.Usuario.FirstOrDefault(x => x.IdUsuario == id);
-
-            if (model == null)
-                return BadRequest("Usuário não encontrado");
-
-            //#region RandonSenha
-            //const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            //StringBuilder sb = new StringBuilder();
-            // Random rnd = new Random();
-
-            // for (int i = 0; i < 6; i++)
-            // {
-            //     int index = rnd.Next(chars.Length);
-            //     sb.Append(chars[index]);
-            // }
-            // string novasenha = sb.ToString();
-            //  #endregion
-
-            //usuario.PrimeiroAcesso = "S";
-            //  usuario.Senha = novasenha;
-
-            // context.Update(usuario);
-            // context.SaveChanges();
-
-            string subject = $"Concicard - Confirmação de Cadastro - {model.Nome}";
-
-            string templateHtml = $@"
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset='UTF-8'>
-                    </head>
-                    <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;'>
-                        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
-        
-                            <div style='background-color: #2563eb; padding: 30px; text-align: center;'>
-                                <h1 style='color: #ffffff; margin: 0; font-size: 24px;'>Bem-vindo à Concicard!</h1>
-                            </div>
-        
-                            <div style='padding: 40px 30px;'>
-                                <h2 style='color: #333333; margin-top: 0;'>Olá, {model.Nome}!</h2>
-            
-                                <p style='color: #666666; font-size: 16px; line-height: 1.6;'>
-                                    Seu cadastro foi realizado com sucesso. Abaixo estão suas credenciais de acesso:
-                                </p>
-            
-                                <div style='background-color: #f8f9fa; border-left: 4px solid #2563eb; padding: 20px; margin: 25px 0; border-radius: 4px;'>
-                                    <p style='margin: 0 0 10px 0; color: #333333;'>
-                                        <strong>Login:</strong> {model.Login}
-                                    </p>
-                                    <p style='margin: 0; color: #333333;'>
-                                        <strong>Senha:</strong> {model.Senha}
-                                    </p>
-                                </div>
-            
-                                <p style='color: #666666; font-size: 14px; line-height: 1.6;'>
-                                    Recomendamos que altere sua senha no primeiro acesso.
-                                </p>
-            
-                                <div style='text-align: center; margin: 35px 0;'>
-                                    <a href='https://app.concicard.com.br/' 
-                                       style='background-color: #2563eb; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;'>
-                                        Acessar o Sistema
-                                    </a>
-                                </div>
-            
-                                <p style='color: #999999; font-size: 12px; text-align: center; margin-top: 30px;'>
-                                    Se você não solicitou este cadastro, por favor ignore este e-mail.
-                                </p>
-                            </div>
-        
-                            <div style='background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;'>
-                                <p style='color: #999999; font-size: 12px; margin: 0;'>
-                                    © 2025 Concicard - Todos os direitos reservados
-                                </p>
-                            </div>
-                        </div>
-                    </body>
-                    </html>";
-
-            MailMessage mailMsg = new MailMessage();
-            mailMsg.From = new MailAddress("gerenciar@gerenciarsc.com.br", "Concicard");
-            mailMsg.Subject = subject;
-            mailMsg.To.Add(new MailAddress(model.Email, model.Nome));
-            mailMsg.IsBodyHtml = true;
-            mailMsg.Body = templateHtml;
-
-            smtpClientSendGrid.Credentials = credentialsSendGrid;
-
-            try
-            {
-                smtpClientSendGrid.Send(mailMsg);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao enviar e-mail: {ex.Message}", ex);
-            }
-            return Ok();
-        }
-
-        [HttpGet]
-        [Route("verificarLoginDuplicado")]
-        [Authorize]
-        public IActionResult VerificarLoginDuplicado(string login)
-        {
-            var res = context.Usuario.FirstOrDefault(x => x.Login == login);
-            if (res == null)
-                return Ok(true);
-            else
-                return Ok(false);
-        }
-
-
 
         [HttpPost]
-        [Route("alterarSenha")]
+        [Route("vincular-google")]
         [Authorize]
-        public IActionResult AlterarSenha([FromBody] AlterarSenhaModel model)
+        public async Task<IActionResult> VincularGoogle([FromBody] UsuarioGoogleRequest model)
         {
-            var usuario = context.Usuario.FirstOrDefault(x => x.Login == User.Identity.Name);
+            try
+            {
+                var email = User.Identity?.Name;
+                var usuario = context.Usuario.FirstOrDefault(x => x.Email == email && x.Situacao == "Ativo");
 
-            if (model.SenhaAtual != usuario.Senha)
-                return BadRequest("Senha atual incorreta ");
+                if (usuario == null)
+                    return BadRequest("Usuário não encontrado");
 
-            if(model.NovaSenha!=model.ConfirmarNovaSenha)
-                return BadRequest("As senhas não coencidem!");
+                var payload = await GoogleJsonWebSignature.ValidateAsync(model.GoogleToken);
 
+                if (payload == null)
+                    return BadRequest("Token do Google inválido");
 
-            usuario.AlterarSenha(model.NovaSenha);
-            
+                var googleJaVinculado = context.Usuario.Any(x => x.GoogleId == payload.Subject && x.IdUsuario != usuario.IdUsuario);
+                if (googleJaVinculado)
+                    return BadRequest("Esta conta Google já está vinculada a outro usuário");
 
-            context.Update(usuario);
-            context.SaveChanges();
-            
-            return Ok();
+                usuario.VincularGoogle(payload.Subject, email);
+                context.Update(usuario);
+                context.SaveChanges();
+
+                return Ok("Conta Google vinculada com sucesso");
+            }
+            catch (InvalidJwtException)
+            {
+                return BadRequest("Token do Google inválido");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [NonAction]
-        public void AlterarSenha()
+        private static string HashSenha(string senha)
         {
-            var usuario = context.Usuario.FirstOrDefault();
-            usuario.PrimeiroAcesso = "N";
-            context.Update(usuario);
-            context.SaveChanges();
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(senha));
+            var builder = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+            return builder.ToString();
         }
 
+        private static string GerarToken(Usuario usuario)
+        {
+            var user = new User
+            {
+                Id = usuario.IdUsuario,
+                Username = usuario.Email,
+                Role = "Usuario"
+            };
+            return TokenService.GenerateToken(user);
+        }
     }
 }
