@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net8.0-windows7.0": {
+    "net8.0": {
       "Azure.Core/1.44.1": {
         "type": "package",
         "dependencies": {
@@ -1534,23 +1534,18 @@
       "Microsoft.Identity.Client/4.56.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Identity.Client.NativeInterop": "0.13.8",
-          "Microsoft.IdentityModel.Abstractions": "6.22.0",
-          "Microsoft.Web.WebView2": "1.0.864.35"
+          "Microsoft.IdentityModel.Abstractions": "6.22.0"
         },
         "compile": {
-          "lib/net6.0-windows7.0/Microsoft.Identity.Client.dll": {
+          "lib/net6.0/Microsoft.Identity.Client.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net6.0-windows7.0/Microsoft.Identity.Client.dll": {
+          "lib/net6.0/Microsoft.Identity.Client.dll": {
             "related": ".xml"
           }
-        },
-        "frameworkReferences": [
-          "Microsoft.WindowsDesktop.App.WindowsForms"
-        ]
+        }
       },
       "Microsoft.Identity.Client.Extensions.Msal/4.56.0": {
         "type": "package",
@@ -1567,29 +1562,6 @@
         "runtime": {
           "lib/netstandard2.0/Microsoft.Identity.Client.Extensions.Msal.dll": {
             "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.Identity.Client.NativeInterop/0.13.8": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/Microsoft.Identity.Client.NativeInterop.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.Identity.Client.NativeInterop.dll": {}
-        },
-        "runtimeTargets": {
-          "runtimes/win-arm64/native/msalruntime_arm64.dll": {
-            "assetType": "native",
-            "rid": "win-arm64"
-          },
-          "runtimes/win-x64/native/msalruntime.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x86/native/msalruntime_x86.dll": {
-            "assetType": "native",
-            "rid": "win-x86"
           }
         }
       },
@@ -1781,48 +1753,6 @@
             "rid": "win-x64"
           },
           "runtimes/win-x86/native/SqlServerSpatial160.dll": {
-            "assetType": "native",
-            "rid": "win-x86"
-          }
-        }
-      },
-      "Microsoft.Web.WebView2/1.0.864.35": {
-        "type": "package",
-        "compile": {
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.dll": {
-            "related": ".xml"
-          },
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.WinForms.dll": {
-            "related": ".xml"
-          },
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Wpf.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.dll": {
-            "related": ".xml"
-          },
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.WinForms.dll": {
-            "related": ".xml"
-          },
-          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Wpf.dll": {
-            "related": ".xml"
-          }
-        },
-        "build": {
-          "build/_._": {}
-        },
-        "runtimeTargets": {
-          "runtimes/win-arm64/native/WebView2Loader.dll": {
-            "assetType": "native",
-            "rid": "win-arm64"
-          },
-          "runtimes/win-x64/native/WebView2Loader.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x86/native/WebView2Loader.dll": {
             "assetType": "native",
             "rid": "win-x86"
           }
@@ -2169,7 +2099,7 @@
           }
         }
       },
-      "ReportViewerCore.WinForms/15.1.17": {
+      "ReportViewerCore.NETCore/15.1.17": {
         "type": "package",
         "dependencies": {
           "Microsoft.CodeAnalysis.VisualBasic": "4.0.0",
@@ -2180,20 +2110,17 @@
           "System.Windows.Extensions": "4.7.0"
         },
         "compile": {
-          "lib/net6.0-windows/Microsoft.ReportViewer.Common.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.DataVisualization.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.ProcessingObjectModel.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.WinForms.dll": {}
+          "lib/net6.0/Microsoft.ReportViewer.Common.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.DataVisualization.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.NETCore.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.ProcessingObjectModel.dll": {}
         },
         "runtime": {
-          "lib/net6.0-windows/Microsoft.ReportViewer.Common.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.DataVisualization.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.ProcessingObjectModel.dll": {},
-          "lib/net6.0-windows/Microsoft.ReportViewer.WinForms.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.WindowsDesktop.App.WindowsForms"
-        ]
+          "lib/net6.0/Microsoft.ReportViewer.Common.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.DataVisualization.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.NETCore.dll": {},
+          "lib/net6.0/Microsoft.ReportViewer.ProcessingObjectModel.dll": {}
+        }
       },
       "RestSharp/106.15.0": {
         "type": "package",
@@ -6571,24 +6498,6 @@
         "microsoft.identity.client.extensions.msal.nuspec"
       ]
     },
-    "Microsoft.Identity.Client.NativeInterop/0.13.8": {
-      "sha512": "eccVwaDOan12YJrh6ntIBIXeKTNoWz+af2/c13lhvrDoX0ydVXitCXMJVz0dh2eJK5y2KJ7IfkEvNilB/A9V7A==",
-      "type": "package",
-      "path": "microsoft.identity.client.nativeinterop/0.13.8",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "build/net461/Microsoft.Identity.Client.NativeInterop.props",
-        "buildtransitive/net461/Microsoft.Identity.Client.NativeInterop.targets",
-        "lib/net461/Microsoft.Identity.Client.NativeInterop.dll",
-        "lib/netstandard2.0/Microsoft.Identity.Client.NativeInterop.dll",
-        "microsoft.identity.client.nativeinterop.0.13.8.nupkg.sha512",
-        "microsoft.identity.client.nativeinterop.nuspec",
-        "runtimes/win-arm64/native/msalruntime_arm64.dll",
-        "runtimes/win-x64/native/msalruntime.dll",
-        "runtimes/win-x86/native/msalruntime_x86.dll"
-      ]
-    },
     "Microsoft.IdentityModel.Abstractions/7.0.3": {
       "sha512": "cfPUWdjigLIRIJSKz3uaZxShgf86RVDXHC1VEEchj1gnY25akwPYpbrfSoIGDCqA9UmOMdlctq411+2pAViFow==",
       "type": "package",
@@ -6830,51 +6739,6 @@
         "microsoft.sqlserver.types.nuspec",
         "runtimes/win-x64/native/SqlServerSpatial160.dll",
         "runtimes/win-x86/native/SqlServerSpatial160.dll"
-      ]
-    },
-    "Microsoft.Web.WebView2/1.0.864.35": {
-      "sha512": "V1qyLRiAZ31qmOOCFCjoONgaUfvJRiTHWcJWkT3V7pluM2+P6QAgqmbE4UX7Gt4sh6eN34wqM30OnTZ6HXI/sw==",
-      "type": "package",
-      "path": "microsoft.web.webview2/1.0.864.35",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.txt",
-        "WebView2.idl",
-        "WebView2.tlb",
-        "build/Common.targets",
-        "build/Microsoft.Web.WebView2.targets",
-        "build/native/Microsoft.Web.WebView2.targets",
-        "build/native/arm64/WebView2Loader.dll",
-        "build/native/arm64/WebView2Loader.dll.lib",
-        "build/native/arm64/WebView2LoaderStatic.lib",
-        "build/native/include/WebView2.h",
-        "build/native/include/WebView2EnvironmentOptions.h",
-        "build/native/x64/WebView2Loader.dll",
-        "build/native/x64/WebView2Loader.dll.lib",
-        "build/native/x64/WebView2LoaderStatic.lib",
-        "build/native/x86/WebView2Loader.dll",
-        "build/native/x86/WebView2Loader.dll.lib",
-        "build/native/x86/WebView2LoaderStatic.lib",
-        "lib/net45/Microsoft.Web.WebView2.Core.dll",
-        "lib/net45/Microsoft.Web.WebView2.Core.xml",
-        "lib/net45/Microsoft.Web.WebView2.WinForms.dll",
-        "lib/net45/Microsoft.Web.WebView2.WinForms.xml",
-        "lib/net45/Microsoft.Web.WebView2.Wpf.dll",
-        "lib/net45/Microsoft.Web.WebView2.Wpf.xml",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.dll",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.xml",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.WinForms.dll",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.WinForms.xml",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.Wpf.dll",
-        "lib/netcoreapp3.0/Microsoft.Web.WebView2.Wpf.xml",
-        "microsoft.web.webview2.1.0.864.35.nupkg.sha512",
-        "microsoft.web.webview2.nuspec",
-        "runtimes/win-arm64/native/WebView2Loader.dll",
-        "runtimes/win-x64/native/WebView2Loader.dll",
-        "runtimes/win-x86/native/WebView2Loader.dll",
-        "tools/VisualStudioToolsManifest.xml"
       ]
     },
     "Microsoft.Win32.Primitives/4.3.0": {
@@ -7291,28 +7155,28 @@
         "portable.bouncycastle.nuspec"
       ]
     },
-    "ReportViewerCore.WinForms/15.1.17": {
-      "sha512": "tnYIj4FJEZGXaP1Ns1dJ6xSugRslsPmxr80dKkPI6D6fxKI4jNVi8jWFpCuBZEQbJkfJ/59yOugWP7fOgL6fzg==",
+    "ReportViewerCore.NETCore/15.1.17": {
+      "sha512": "+aJSex/eI7aRVwpSogOTkQCb6TBBnQFHs0RPlSiHU4+Chwq6DAsU5DI8KaOja90V/XKYHJtlos90xFHGQst9Ug==",
       "type": "package",
-      "path": "reportviewercore.winforms/15.1.17",
+      "path": "reportviewercore.netcore/15.1.17",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "images/icon.png",
-        "lib/net5.0-windows/Microsoft.ReportViewer.Common.dll",
-        "lib/net5.0-windows/Microsoft.ReportViewer.DataVisualization.dll",
-        "lib/net5.0-windows/Microsoft.ReportViewer.ProcessingObjectModel.dll",
-        "lib/net5.0-windows/Microsoft.ReportViewer.WinForms.dll",
-        "lib/net6.0-windows/Microsoft.ReportViewer.Common.dll",
-        "lib/net6.0-windows/Microsoft.ReportViewer.DataVisualization.dll",
-        "lib/net6.0-windows/Microsoft.ReportViewer.ProcessingObjectModel.dll",
-        "lib/net6.0-windows/Microsoft.ReportViewer.WinForms.dll",
+        "lib/net5.0/Microsoft.ReportViewer.Common.dll",
+        "lib/net5.0/Microsoft.ReportViewer.DataVisualization.dll",
+        "lib/net5.0/Microsoft.ReportViewer.NETCore.dll",
+        "lib/net5.0/Microsoft.ReportViewer.ProcessingObjectModel.dll",
+        "lib/net6.0/Microsoft.ReportViewer.Common.dll",
+        "lib/net6.0/Microsoft.ReportViewer.DataVisualization.dll",
+        "lib/net6.0/Microsoft.ReportViewer.NETCore.dll",
+        "lib/net6.0/Microsoft.ReportViewer.ProcessingObjectModel.dll",
         "lib/netcoreapp3.1/Microsoft.ReportViewer.Common.dll",
         "lib/netcoreapp3.1/Microsoft.ReportViewer.DataVisualization.dll",
+        "lib/netcoreapp3.1/Microsoft.ReportViewer.NETCore.dll",
         "lib/netcoreapp3.1/Microsoft.ReportViewer.ProcessingObjectModel.dll",
-        "lib/netcoreapp3.1/Microsoft.ReportViewer.WinForms.dll",
-        "reportviewercore.winforms.15.1.17.nupkg.sha512",
-        "reportviewercore.winforms.nuspec"
+        "reportviewercore.netcore.15.1.17.nupkg.sha512",
+        "reportviewercore.netcore.nuspec"
       ]
     },
     "RestSharp/106.15.0": {
@@ -12048,7 +11912,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net8.0-windows7.0": [
+    "net8.0": [
       "Azure.Storage.Blobs >= 12.24.0",
       "CsvHelper >= 30.0.1",
       "Dapper >= 2.0.123",
@@ -12066,7 +11930,7 @@
       "MySql.Data >= 8.0.32",
       "Newtonsoft.Json >= 13.0.4",
       "OFXSharp >= 1.0.4002",
-      "ReportViewerCore.WinForms >= 15.1.17",
+      "ReportViewerCore.NETCore >= 15.1.17",
       "RestSharp >= 106.15.0",
       "SDK-CloudDfe >= 1.0.7",
       "Swashbuckle.AspNetCore >= 6.5.0",
@@ -12077,37 +11941,29 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\kleyt\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/kleytonwillian/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\git\\app-financeiro\\app-financeiro-back\\ERP_API.csproj",
+      "projectUniqueName": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/ERP_API.csproj",
       "projectName": "ERP_API",
-      "projectPath": "C:\\git\\app-financeiro\\app-financeiro-back\\ERP_API.csproj",
-      "packagesPath": "C:\\Users\\kleyt\\.nuget\\packages\\",
-      "outputPath": "C:\\git\\app-financeiro\\app-financeiro-back\\obj\\",
+      "projectPath": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/ERP_API.csproj",
+      "packagesPath": "/Users/kleytonwillian/.nuget/packages/",
+      "outputPath": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\kleyt\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/kleytonwillian/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net8.0-windows7.0"
+        "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0-windows7.0": {
-          "targetAlias": "net8.0-windows7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "projectReferences": {}
         }
       },
@@ -12120,12 +11976,11 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.200"
+      }
     },
     "frameworks": {
-      "net8.0-windows7.0": {
-        "targetAlias": "net8.0-windows7.0",
+      "net8.0": {
+        "targetAlias": "net8.0",
         "dependencies": {
           "Azure.Storage.Blobs": {
             "target": "Package",
@@ -12197,7 +12052,7 @@
             "target": "Package",
             "version": "[1.0.4002, )"
           },
-          "ReportViewerCore.WinForms": {
+          "ReportViewerCore.NETCore": {
             "target": "Package",
             "version": "[15.1.17, )"
           },
@@ -12249,7 +12104,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200-preview.0.26103.119/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/Users/kleytonwillian/.dotnet/sdk/8.0.206/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -12258,40 +12113,40 @@
       "code": "NU1608",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Versão detectada do pacote fora da restrição de dependência: Microsoft.CodeAnalysis.VisualBasic 4.0.0 requer Microsoft.CodeAnalysis.Common (= 4.0.0), mas a versão Microsoft.CodeAnalysis.Common 4.5.0 foi resolvida.",
+      "message": "Detected package version outside of dependency constraint: Microsoft.CodeAnalysis.VisualBasic 4.0.0 requires Microsoft.CodeAnalysis.Common (= 4.0.0) but version Microsoft.CodeAnalysis.Common 4.5.0 was resolved.",
       "libraryId": "Microsoft.CodeAnalysis.Common",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'OFXSharp 1.0.4002' foi restaurado usando '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' em vez da estrutura de destino do projeto 'net8.0-windows7.0'. Esse pacote pode não ser totalmente compatível com o seu projeto.",
+      "message": "Package 'OFXSharp 1.0.4002' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "OFXSharp",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'SDK-CloudDfe 1.0.7' foi restaurado usando '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' em vez da estrutura de destino do projeto 'net8.0-windows7.0'. Esse pacote pode não ser totalmente compatível com o seu projeto.",
+      "message": "Package 'SDK-CloudDfe 1.0.7' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "SDK-CloudDfe",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'SgmlReader 1.8.11' foi restaurado usando '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' em vez da estrutura de destino do projeto 'net8.0-windows7.0'. Esse pacote pode não ser totalmente compatível com o seu projeto.",
+      "message": "Package 'SgmlReader 1.8.11' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "SgmlReader",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0"
       ]
     }
   ]

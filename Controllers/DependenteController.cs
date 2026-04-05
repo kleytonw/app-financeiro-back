@@ -92,7 +92,12 @@ namespace ERP_API.Controllers
                 context.Add(dependente);
             }
             context.SaveChanges();
-            return Ok();
+            return Ok(new DependenteResponse
+            {
+                IdDependente = dependente.IdDependente,
+                Nome = dependente.Nome,
+                Situacao = dependente.Situacao
+            });
         }
 
 

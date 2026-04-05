@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "P3N2q3K0jx3zxJIs1QGBfTj80nIRansNl4fyYcxeQKE=",
+  "Source": "ERP_API",
+  "BasePath": "_content/ERP_API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ERP_API/wwwroot",
+      "Source": "ERP_API",
+      "ContentRoot": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/wwwroot/",
+      "BasePath": "_content/ERP_API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/wwwroot/index.html",
+      "SourceId": "ERP_API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/wwwroot/",
+      "BasePath": "_content/ERP_API",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/index.html"
+    }
+  ]
+}

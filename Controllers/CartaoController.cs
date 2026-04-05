@@ -63,7 +63,17 @@ namespace ERP_API.Controllers
                 context.Add(cartao);
             }
             context.SaveChanges();
-            return Ok();
+            return Ok(new CartaoResponse
+            {
+                IdCartao = cartao.IdCartao,
+                Nome = cartao.Nome,
+                Bandeira = cartao.Bandeira,
+                UltimosDigitos = cartao.UltimosDigitos,
+                DiaFechamento = cartao.DiaFechamento,
+                DiaVencimento = cartao.DiaVencimento,
+                LimiteTotal = cartao.LimiteTotal,
+                Situacao = cartao.Situacao
+            });
         }
 
 
@@ -95,10 +105,11 @@ namespace ERP_API.Controllers
         public IActionResult Excluir(int id)
         {
             var cartao = context.Cartao.FirstOrDefault(x => x.IdCartao == id);
+            if (cartao == null)
+                return BadRequest("Cartão encontrado");
 
-            cartao.Excluir(User.Identity.Name);
-
-            context.Update(cartao);
+            context.Cartao.Remove(cartao);
+            
             context.SaveChanges();
             return Ok();
         }

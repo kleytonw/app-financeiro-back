@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/kleytonwillian/Documents/git-app-financeiro/app-financeiro-back/app-financeiro-back/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ERP_API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.ERP_API.props",
+      "PackagePath": "build\\ERP_API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ERP_API.props",
+      "PackagePath": "buildMultiTargeting\\ERP_API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ERP_API.props",
+      "PackagePath": "buildTransitive\\ERP_API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
