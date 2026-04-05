@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 namespace ERP_API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UsuarioController(Context context) : ControllerBase
     {
         [HttpPost]

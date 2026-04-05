@@ -32,7 +32,7 @@ namespace ERP_API.Controllers
         }
 
         [HttpPost]
-        [Route("Salvar")]
+        [Route("salvar")]
         public IActionResult Salvar([FromBody] CategoriaRequest model)
         {
             Categoria categoria;
@@ -61,7 +61,13 @@ namespace ERP_API.Controllers
             }
 
             context.SaveChanges();
-            return Ok();
+            return Ok(new CategoriaResponse
+            {
+                IdCategoria = categoria.IdCategoria,
+                Nome = categoria.Nome,
+                Cor = categoria.Cor,
+                Situacao = categoria.Situacao
+            });
 
         }
 
